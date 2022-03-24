@@ -1,8 +1,6 @@
 import { defineNuxtConfig } from 'nuxt3'
 
 export default defineNuxtConfig({
-  css: ['ant-design-vue/dist/antd.css'],
-
   meta: {
     title: 'Petshop',
     meta: [
@@ -10,13 +8,14 @@ export default defineNuxtConfig({
     ]
   },
 
-  build: {
-    transpile: ['ant-design-vue']
-  },
-
   components: true,
 
   buildModules: [
-    '@nuxtjs/tailwindcss'
+    '@nuxtjs/tailwindcss',
+    ['@nuxtjs/google-fonts', {
+      families: {
+        Inter: [300, 400, 500, 600, 700]
+      }
+    }]
   ]
 })

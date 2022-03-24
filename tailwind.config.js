@@ -1,12 +1,15 @@
 module.exports = {
   content: [
     'pages/*.vue',
-    'pages/**/*.vue',
-    'layouts/**/*.vue',
-    'components/**/*.vue'
+    'layouts/*.vue'
   ],
   theme: {
-    extend: {}
+    extend: {},
+
+    container: {
+      center: true,
+      padding: '1.5rem'
+    }
   },
   plugins: []
 }
