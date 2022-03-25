@@ -9,7 +9,7 @@
     </p>
 
     <div class="mt-16 flex flex-col gap-6">
-      <NuxtLink to="/create/vet">
+      <NuxtLink to="/signup/vet">
         <Button
           label="Quero ser um veterinário"
           class="w-full"
@@ -17,7 +17,7 @@
         />
       </NuxtLink>
 
-      <NuxtLink to="/create/user">
+      <NuxtLink to="/signup/user">
         <Button
           label="Quero ser um cliente"
           class="w-full"

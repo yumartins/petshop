@@ -7,14 +7,14 @@
       >
 
       <div class="flex gap-6 items-center">
-        <NuxtLink to="/vet">
+        <NuxtLink to="/auth/vet">
           <Button
             label="Acessar como veterinário"
             appearance="secondary"
           />
         </NuxtLink>
 
-        <NuxtLink to="/user">
+        <NuxtLink to="/auth/user">
           <Button label="Acessar como cliente" />
         </NuxtLink>
       </div>
