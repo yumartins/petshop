@@ -1,6 +1,10 @@
 import { defineNuxtConfig } from 'nuxt3'
 
 export default defineNuxtConfig({
+  css: [
+    '@/assets/css/main.css'
+  ],
+
   meta: {
     title: 'Petshop',
     meta: [

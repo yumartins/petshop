@@ -7,6 +7,23 @@
     <p class="mt-6 text-base text-gray-500">
       Human–canine bonding is the relationship between dogs and humans.
     </p>
+
+    <div class="mt-16 flex flex-col gap-6">
+      <NuxtLink to="/create/vet">
+        <Button
+          label="Quero ser um veterinário"
+          class="w-full"
+          appearance="secondary"
+        />
+      </NuxtLink>
+
+      <NuxtLink to="/create/user">
+        <Button
+          label="Quero ser um cliente"
+          class="w-full"
+        />
+      </NuxtLink>
+    </div>
   </div>
 </template>
 
