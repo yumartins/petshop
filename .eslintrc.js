@@ -9,10 +9,12 @@ module.exports = {
     '@nuxtjs/eslint-config-typescript'
   ],
   parserOptions: {
-    ecmaVersion: 'latest',
     parser: '@typescript-eslint/parser',
-    sourceType: 'module'
+    sourceType: 'module',
+    ecmaVersion: 'latest'
   },
   rules: {
+    'import/extensions': 0,
+    'import/prefer-default-export': 0
   }
 }

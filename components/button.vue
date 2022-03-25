@@ -1,6 +1,6 @@
 <template>
   <button class="button" :class="appearance ? `is-${appearance}` : 'is-primary'">
-    {{ label }}
+    {{ loading ? 'Carregando ...' : label }}
   </button>
 </template>
 
@@ -14,10 +14,14 @@ export default {
       required: true
     },
 
+    loading: {
+      type: Boolean,
+      default: false
+    },
+
     appearance: {
       type: String,
-      default: 'primary',
-      required: false
+      default: 'primary'
     }
   }
 }

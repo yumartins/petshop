@@ -60,7 +60,15 @@
         type="submit"
         label="Cadastrar"
         class="mt-8"
+        :loading="loading"
       />
+
+      <span
+        v-if="error"
+        class="text-sm text-red-500"
+      >
+        {{ error }}
+      </span>
     </form>
   </div>
 </template>
@@ -74,25 +82,58 @@ definePageMeta({
 
 export default {
   setup () {
-    const name = ref('')
-    const crmv = ref('')
+    const form = ref({
+      name: '',
+      crmv: '',
+      city: '',
+      state: '',
+      street: '',
+      number: ''
+    })
 
-    const address = {
-      city: ref(''),
-      state: ref(''),
-      street: ref(''),
-      number: ref('')
+    const error = ref('')
+    const loading = ref(false)
+
+    const onloading = (state) => {
+      loading.value = state
     }
 
-    const create = () => {
-      console.log(address.state.value, address.city.value)
+    const create = async () => {
+      onloading(true)
+
+      const {
+        name,
+        city,
+        crmv,
+        state,
+        street,
+        number
+      } = form.value
+
+      await api.post('/person', {
+        name,
+        city,
+        street,
+        number: number ? Number(number) : undefined,
+        district: state
+      })
+        .then(async ({ data }) => {
+          await api.post('/vet', {
+            crmv,
+            person_id: data.id
+          })
+        })
+        .catch(({ response }) => {
+          error.value = response
+        })
+        .finally(() => onloading(false))
     }
 
     return {
-      crmv,
-      name,
+      form,
+      error,
       create,
-      ...address
+      loading
     }
   }
 }
