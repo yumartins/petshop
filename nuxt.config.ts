@@ -12,6 +12,10 @@ export default defineNuxtConfig({
     ]
   },
 
+  router: {
+    trailingSlash: true
+  },
+
   components: true,
 
   buildModules: [

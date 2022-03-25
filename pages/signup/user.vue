@@ -35,8 +35,8 @@
 
       <div class="flex items-center gap-4">
         <Input
-          id="state"
-          v-model="form.state"
+          id="district"
+          v-model="form.district"
           label="Estado"
           placeholder="Digite seu estado"
         />
@@ -66,7 +66,7 @@
   </div>
 </template>
 
-<script ts>
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { api } from '~/services'
 
@@ -74,54 +74,37 @@ definePageMeta({
   layout: 'auth'
 })
 
-export default {
-  setup () {
-    const form = ref({
-      name: '',
-      city: '',
-      state: '',
-      street: '',
-      number: ''
+const router = useRouter()
+
+const form = ref({
+  name: '',
+  city: '',
+  street: '',
+  number: '',
+  district: ''
+})
+
+const error = ref('')
+const loading = ref(false)
+
+const onloading = (state) => {
+  loading.value = state
+}
+
+const create = async () => {
+  onloading(true)
+
+  const data = new FormData()
+
+  Object.entries(form.value).forEach(([key, value]) => {
+    data.append(key, value)
+  })
+
+  await api.post('/person', data)
+    .then(({ data: response }) => router.push(`/user/${response.data.id}`))
+    .catch(() => {
+      error.value = 'Preencha todos os campos.'
     })
-
-    const error = ref('')
-    const loading = ref(false)
-
-    const onloading = (state) => {
-      loading.value = state
-    }
-
-    const create = async () => {
-      onloading(true)
-
-      const {
-        name,
-        city,
-        state,
-        street,
-        number
-      } = form.value
-
-      await api.post('/person', {
-        name,
-        city,
-        street,
-        number: number ? Number(number) : undefined,
-        district: state
-      })
-        .then(({ data }) => console.log(data))
-        .catch(({ response }) => {
-          error.value = response
-        })
-        .finally(() => onloading(false))
-    }
-
-    return {
-      form,
-      error,
-      create,
-      loading
-    }
-  }
+    .finally(() => onloading(false))
 }
 </script>

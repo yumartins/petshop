@@ -20,7 +20,7 @@
   </div>
 </template>
 
-<script ts>
+<script lang="ts">
 export default {
   name: 'BaseInput',
 

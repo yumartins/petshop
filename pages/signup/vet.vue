@@ -73,8 +73,9 @@
   </div>
 </template>
 
-<script ts>
+<script lang="ts">
 import { ref } from 'vue'
+import { api } from '~/services'
 
 definePageMeta({
   layout: 'auth'

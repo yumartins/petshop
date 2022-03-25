@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<script ts setup>
+<script lang="ts" setup>
 definePageMeta({
   layout: 'app'
 })
