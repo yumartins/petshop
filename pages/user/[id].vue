@@ -7,6 +7,7 @@
 
       <div class="flex items-center gap-4">
         <Button
+          v-if="pets.length > 0"
           label="Agendar consulta"
           appearance="secondary"
           @click="toggle('SCHEDULE')"
@@ -32,7 +33,6 @@
         <div class="flex flex-col">
           <div class="flex items-center">
             <span
-              v-if="pet.color"
               :style="{ backgroundColor: pet.color }"
               class="w-2 h-2 rounded-full mr-4"
             />
