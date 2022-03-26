@@ -4,27 +4,12 @@
   </button>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'BaseButton',
-
-  props: {
-    label: {
-      type: String,
-      required: true
-    },
-
-    loading: {
-      type: Boolean,
-      default: false
-    },
-
-    appearance: {
-      type: String,
-      default: 'primary'
-    }
-  }
-}
+<script lang="ts" setup>
+defineProps<{
+  label: string,
+  loading?: boolean,
+  appearance?: 'primary' | 'secondary',
+}>()
 </script>
 
 <style lang="postcss">

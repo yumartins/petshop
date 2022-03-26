@@ -5,10 +5,18 @@
         Olá, {{ data.name }}
       </h1>
 
-      <Button
-        label="Adicionar pet"
-        @click="toggle"
-      />
+      <div class="flex items-center gap-4">
+        <Button
+          label="Agendar consulta"
+          appearance="secondary"
+          @click="toggle('SCHEDULE')"
+        />
+
+        <Button
+          label="Adicionar pet"
+          @click="toggle('CREATE')"
+        />
+      </div>
     </div>
 
     <div
@@ -74,10 +82,10 @@
     </div>
 
     <Modal
-      v-show="show"
+      v-show="showed"
       title="Cadastrar pet"
       :loading="loading"
-      @close="toggle"
+      @close="toggle('CREATE')"
       @create="create"
     >
       <div class="flex flex-col gap-4">
@@ -112,6 +120,55 @@
         />
       </div>
     </Modal>
+
+    <Modal
+      v-show="scheduled"
+      title="Agendar consulta"
+      button="Agendar"
+      :loading="loading"
+      @close="toggle('SCHEDULE')"
+      @create="scheduling"
+    >
+      <div class="flex flex-col gap-4">
+        <Select
+          id="vet_id"
+          v-model="refs.vet_id"
+          label="Veterinário"
+          :options="vets"
+          placeholder="Selecione o veterinário"
+        />
+
+        <Select
+          id="pet_id"
+          v-model="refs.pet_id"
+          label="Pet"
+          :options="filterPets()"
+          placeholder="Selecione o pet"
+        />
+
+        <Input
+          id="date"
+          v-model="refs.date"
+          type="date"
+          label="Data"
+          placeholder="Selecione a data da consulta"
+        />
+
+        <Input
+          id="description"
+          v-model="refs.description"
+          label="Descrição"
+          placeholder="Digite o que deseja"
+        />
+
+        <span
+          v-if="success"
+          class="text-green-500 mt-6 text-center text-sm"
+        >
+          {{ success }}
+        </span>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -119,13 +176,23 @@
 import { api } from '~/services'
 import { format } from 'date-fns'
 
+const load = ref(false)
+
 const show = ref(false)
-const loading = ref(false)
+const success = ref('')
+const schedule = ref(false)
 
 const form = ref({
   name: '',
   color: '#000000',
   birth_date: '',
+  description: ''
+})
+
+const refs = ref({
+  date: '',
+  pet_id: null,
+  vet_id: null,
   description: ''
 })
 
@@ -144,6 +211,21 @@ const {
   const req = await api.get(`/person/${id}`)
 
   return req.data.data
+})
+
+/**
+ * List vets data.
+ */
+const {
+  data: reqVets
+} = await useAsyncData('vets', async () => {
+  const req = await api.get('/vet')
+
+  const formatter = req.data.data.length > 0
+    ? req.data.data.map(field => ({ value: field.id, label: field.person.name }))
+    : []
+
+  return formatter
 })
 
 /**
@@ -172,17 +254,31 @@ const {
  * Convert from proxy to array.
  */
 const data = toRaw(reqData.value)
+const vets = toRaw(reqVets.value)
 const pets = computed(() => toRaw(reqPets.value))
 
 const onloading = (state: boolean) => {
-  loading.value = state
+  load.value = state
 }
 
 /**
  * Toggle modal.
  */
-const toggle = () => {
-  show.value = !show.value
+const toggle = (key: 'CREATE' | 'SCHEDULE') => {
+  switch (key) {
+    case 'CREATE':
+      show.value = !show.value
+
+      break
+
+    case 'SCHEDULE':
+      schedule.value = !schedule.value
+
+      break
+
+    default:
+      break
+  }
 }
 
 /**
@@ -203,7 +299,7 @@ const create = async () => {
     .then(async () => {
       await refresh()
 
-      toggle()
+      toggle('CREATE')
     })
     .finally(() => onloading(false))
 }
@@ -217,4 +313,49 @@ const remove = async (key: number) => {
   await refresh()
 }
 
+/**
+ * Format pets for populate select.
+ */
+const filterPets = () => {
+  if (pets.value.length > 0) {
+    const filter = pets.value.map(pet => ({
+      value: pet.id,
+      label: pet.name
+    }))
+
+    return filter
+  }
+
+  return []
+}
+
+/**
+ * Schedule with vet.
+ */
+const scheduling = async () => {
+  onloading(true)
+
+  const formatter = new FormData()
+
+  formatter.append('date', refs.value.date)
+  formatter.append('description', refs.value.description)
+  formatter.append('pet_id', refs.value.pet_id.value)
+  formatter.append('vet_id', refs.value.vet_id.value)
+
+  await api.post('/consultation', formatter)
+    .then(() => {
+      success.value = 'Agendamento realizado com sucesso.'
+
+      setTimeout(() => {
+        success.value = ''
+
+        toggle('SCHEDULE')
+      }, 3000)
+    })
+    .finally(() => onloading(false))
+}
+
+const showed = computed(() => show.value)
+const loading = computed(() => load.value)
+const scheduled = computed(() => schedule.value)
 </script>

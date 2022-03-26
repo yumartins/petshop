@@ -124,12 +124,10 @@ const create = async () => {
         data: res
       } = await api.post('/vet', register)
 
-      console.log(res)
-
       router.push(`/vet/${res.data.id}`)
     })
-    .catch(({ response }) => {
-      error.value = response
+    .catch(() => {
+      error.value = 'Preencha todos os campos.'
     })
     .finally(() => onloading(false))
 }

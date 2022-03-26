@@ -10,7 +10,7 @@
 
     <input
       :id="id"
-      :type="type"
+      :type="type || 'text'"
       :value="modelValue"
       :placeholder="placeholder"
       :class="{ '!p-0 h-[3.375rem] border-none': type === 'color' }"
@@ -21,35 +21,12 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'BaseInput',
-
-  props: {
-    id: {
-      type: String,
-      default: ''
-    },
-
-    label: {
-      type: String,
-      default: ''
-    },
-
-    type: {
-      type: String,
-      default: 'text'
-    },
-
-    modelValue: {
-      type: [String, Date, Number],
-      default: ''
-    },
-
-    placeholder: {
-      type: String,
-      default: ''
-    }
-  }
-}
+<script lang="ts" setup>
+defineProps<{
+  id: string,
+  type?: string,
+  label?: string,
+  modelValue?: string | number,
+  placeholder?: string,
+}>()
 </script>

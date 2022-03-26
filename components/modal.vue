@@ -9,7 +9,7 @@
         <button
           type="button"
           class="font-sans text-xl text-gray-500"
-          @click="close"
+          @click="$emit('close')"
         >
           x
         </button>
@@ -21,43 +21,25 @@
         <Button
           label="Cancelar"
           appearance="secondary"
-          @click="close"
+          @click="$emit('close')"
         />
 
         <Button
-          label="Adicionar"
+          :label="button || 'Adicionar'"
           :loading="loading"
-          @click="create"
+          @click="$emit('create')"
         />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'BaseModal',
+<script lang="ts" setup>
+defineProps<{
+  title: string,
+  button?: string,
+  loading: boolean,
+}>()
 
-  props: {
-    title: {
-      type: String,
-      required: true
-    },
-
-    loading: {
-      type: Boolean,
-      required: true
-    }
-  },
-
-  methods: {
-    create () {
-      this.$emit('create')
-    },
-
-    close () {
-      this.$emit('close')
-    }
-  }
-}
+defineEmits(['close', 'create'])
 </script>
