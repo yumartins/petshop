@@ -107,3 +107,4 @@ dist
 .nuxt
 nuxt.d.ts
 .output
+.vercel

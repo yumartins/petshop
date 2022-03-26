@@ -262,16 +262,46 @@ const onloading = (state: boolean) => {
 }
 
 /**
+ * Clear fields.
+ */
+const clear = (key: 'CREATE' | 'SCHEDULE') => {
+  const selectors = ['pet_id', 'vet_id']
+
+  switch (key) {
+    case 'CREATE':
+      Object.entries(form.value).forEach(([res]) => {
+        form.value[res] = res === 'color' ? '#000000' : ''
+      })
+
+      break
+
+    case 'SCHEDULE':
+      Object.entries(refs.value).forEach(([res]) => {
+        refs.value[res] = selectors.includes(res) ? null : ''
+      })
+
+      break
+
+    default:
+      break
+  }
+}
+
+/**
  * Toggle modal.
  */
 const toggle = (key: 'CREATE' | 'SCHEDULE') => {
   switch (key) {
     case 'CREATE':
+      clear('CREATE')
+
       show.value = !show.value
 
       break
 
     case 'SCHEDULE':
+      clear('SCHEDULE')
+
       schedule.value = !schedule.value
 
       break
@@ -298,6 +328,8 @@ const create = async () => {
   await api.post('/pet', formatter)
     .then(async () => {
       await refresh()
+
+      clear('CREATE')
 
       toggle('CREATE')
     })
@@ -344,6 +376,8 @@ const scheduling = async () => {
 
   await api.post('/consultation', formatter)
     .then(() => {
+      clear('SCHEDULE')
+
       success.value = 'Agendamento realizado com sucesso.'
 
       setTimeout(() => {
