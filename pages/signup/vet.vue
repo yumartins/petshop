@@ -14,36 +14,36 @@
     >
       <Input
         id="name"
-        v-model="name"
+        v-model="form.name"
         label="Nome"
         placeholder="Digite seu nome"
       />
 
       <Input
         id="street"
-        v-model="street"
+        v-model="form.street"
         label="Rua"
         placeholder="Digite seu endereço"
       />
 
       <Input
         id="number"
-        v-model="number"
+        v-model="form.number"
         label="Número"
         placeholder="Digite seu número de endereço"
       />
 
       <div class="flex items-center gap-4">
         <Input
-          id="state"
-          v-model="state"
+          id="district"
+          v-model="form.district"
           label="Estado"
           placeholder="Digite seu estado"
         />
 
         <Input
           id="city"
-          v-model="city"
+          v-model="form.city"
           label="Cidade"
           placeholder="Digite sua cidade"
         />
@@ -51,7 +51,7 @@
 
       <Input
         id="crmv"
-        v-model="crmv"
+        v-model="form.crmv"
         label="CRMV"
         placeholder="Digite seu número CRMV"
       />
@@ -73,7 +73,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { ref } from 'vue'
 import { api } from '~/services'
 
@@ -81,61 +81,56 @@ definePageMeta({
   layout: 'auth'
 })
 
-export default {
-  setup () {
-    const form = ref({
-      name: '',
-      crmv: '',
-      city: '',
-      state: '',
-      street: '',
-      number: ''
-    })
+const router = useRouter()
 
-    const error = ref('')
-    const loading = ref(false)
+const form = ref({
+  name: '',
+  crmv: '',
+  city: '',
+  street: '',
+  number: '',
+  district: ''
+})
 
-    const onloading = (state) => {
-      loading.value = state
-    }
+const error = ref('')
+const loading = ref(false)
 
-    const create = async () => {
-      onloading(true)
+const onloading = (state) => {
+  loading.value = state
+}
+
+const create = async () => {
+  onloading(true)
+
+  const {
+    crmv,
+    ...rest
+  } = form.value
+
+  const data = new FormData()
+
+  Object.entries(rest).forEach(([key, value]) => {
+    data.append(key, value)
+  })
+
+  await api.post('/person', data)
+    .then(async ({ data: response }) => {
+      const register = new FormData()
+
+      register.append('crmv', crmv)
+      register.append('person_id', response.data.id)
 
       const {
-        name,
-        city,
-        crmv,
-        state,
-        street,
-        number
-      } = form.value
+        data: res
+      } = await api.post('/vet', register)
 
-      await api.post('/person', {
-        name,
-        city,
-        street,
-        number: number ? Number(number) : undefined,
-        district: state
-      })
-        .then(async ({ data }) => {
-          await api.post('/vet', {
-            crmv,
-            person_id: data.id
-          })
-        })
-        .catch(({ response }) => {
-          error.value = response
-        })
-        .finally(() => onloading(false))
-    }
+      console.log(res)
 
-    return {
-      form,
-      error,
-      create,
-      loading
-    }
-  }
+      router.push(`/vet/${res.data.id}`)
+    })
+    .catch(({ response }) => {
+      error.value = response
+    })
+    .finally(() => onloading(false))
 }
 </script>
