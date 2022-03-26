@@ -13,6 +13,7 @@
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
+      :class="{ '!p-0 h-[3.375rem] border-none': type === 'color' }"
       class="border border-solid border-gray-200 w-full px-6
        py-4 text-sm rounded-lg text-gray-600 placeholder:text-gray-400"
       @change="$emit('update:modelValue', $event.target.value)"
@@ -41,7 +42,7 @@ export default {
     },
 
     modelValue: {
-      type: [String, Number],
+      type: [String, Date, Number],
       default: ''
     },
 

@@ -87,7 +87,7 @@ const form = ref({
 const error = ref('')
 const loading = ref(false)
 
-const onloading = (state) => {
+const onloading = (state: boolean) => {
   loading.value = state
 }
 
